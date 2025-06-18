@@ -97,3 +97,10 @@ def task_update(request, id):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['DELETE'])
+def task_delete(request, id):
+    task = get_object_or_404(Task, id=id)
+    task.delete()
+    return Response({"message" : "Task deleted successfully"}, status=200)
