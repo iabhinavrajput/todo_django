@@ -68,3 +68,13 @@ def task_list(request):
     tasks = Task.objects.all()
     serializer = TaskSerializer(tasks, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def task_detail(request,id):
+    try:
+        task = Task.objects.get(id=id)
+    except Task.DoesNotExist:
+        return Response({'error' : 'Task no found'}, status=404)
+    serializer = TaskSerializer(task, many=False)
+    return Response(serializer.data)
