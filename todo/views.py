@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Task
+from .serializers import TaskSerializer
 
 def task_list(request):
     if request.method == 'POST':
@@ -46,3 +49,22 @@ def unceck_task(request, task_id):
 def delete_all_tasks(reuest):
     Task.objects.all().delete()
     return redirect('task_list')
+
+
+@api_view(['GET'])
+def api_overview(request):
+    api_urls = {
+        'List' : '/task_list/',
+        'Details' : '/task_details/<int:id>/',
+        'Create': '/task-create/',
+        'Update': '/task-update/<int:id>/',
+        'Delete': '/task-delete/<int:id>/',
+    }
+    return Response(api_urls)
+
+
+@api_view(["GET"])
+def task_list(request):
+    tasks = Task.objects.all()
+    serializer = TaskSerializer(tasks, many=True)
+    return Response(serializer.data)
